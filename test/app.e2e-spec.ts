@@ -4,6 +4,7 @@ import * as request from 'supertest';
 import { AppModule } from './../src/app.module';
 
 describe('AppController (e2e)', () => {
+<<<<<<< HEAD
   let app: INestApplication;
 
   beforeEach(async () => {
@@ -21,4 +22,20 @@ describe('AppController (e2e)', () => {
       .expect(200)
       .expect('Hello World!');
   });
+=======
+    let app: INestApplication;
+
+    beforeEach(async () => {
+        const moduleFixture: TestingModule = await Test.createTestingModule({
+            imports: [AppModule],
+        }).compile();
+
+        app = moduleFixture.createNestApplication();
+        await app.init();
+    });
+
+    it('/ (GET)', () => {
+        return request(app.getHttpServer()).get('/').expect(200).expect('Hello World!');
+    });
+>>>>>>> e9dcf66 (services)
 });

@@ -22,6 +22,10 @@ module.exports = {
     '@typescript-eslint/explicit-module-boundary-types': 'off',
     '@typescript-eslint/no-explicit-any': 'off',
     "ignoreRestSiblings": true,
+<<<<<<< HEAD
+=======
+    // 'ignoreRestSiblings': [2, { "ignoreRestSiblings": true }],
+>>>>>>> e9dcf66 (services)
     'prettier/prettier': 0,
   },
 };
