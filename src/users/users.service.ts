@@ -1,17 +1,11 @@
 import { Injectable } from '@nestjs/common';
-<<<<<<< HEAD
-
-@Injectable()
-export class UsersService {}
-=======
 import { UserEntity } from './user.entity';
 import { UpdateUserDto } from './dtos/update-user.dto';
 import { CreateUserDto } from './dtos/create-user.dto';
 import { v4 as uuid } from 'uuid';
 
 @Injectable()
-export class UsersService {
-    private users: UserEntity[] = [];
+export class UsersService {   private users: UserEntity[] = [];
 
     findUsers(): UserEntity[] {
         return this.users;
@@ -38,6 +32,4 @@ export class UsersService {
 
     deleteUser(id: string): void {
         this.users = this.users.filter((user) => user.id !== id);
-    }
-}
->>>>>>> e9dcf66 (services)
+    }}
