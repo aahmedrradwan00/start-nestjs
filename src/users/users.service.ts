@@ -5,7 +5,8 @@ import { CreateUserDto } from './dtos/create-user.dto';
 import { v4 as uuid } from 'uuid';
 
 @Injectable()
-export class UsersService {   private users: UserEntity[] = [];
+export class UsersService {
+    private users: UserEntity[] = [];
 
     findUsers(): UserEntity[] {
         return this.users;
@@ -32,4 +33,5 @@ export class UsersService {   private users: UserEntity[] = [];
 
     deleteUser(id: string): void {
         this.users = this.users.filter((user) => user.id !== id);
-    }}
+    }
+}
