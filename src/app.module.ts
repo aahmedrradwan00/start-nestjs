@@ -5,25 +5,33 @@ import { UsersController } from './users/users.controller';
 import { UsersModule } from './users/users.module';
 import { UsersService } from './users/users.service';
 import { LoggerMiddleware } from './common/middleware/logger.middleware';
-import { APP_GUARD } from '@nestjs/core';
+import { APP_FILTER, APP_GUARD } from '@nestjs/core';
 import { RolesGuard } from './common/guards/roles.guard';
+import { ConfigModule, ConfigService } from '@nestjs/config';
+import { MongooseModule } from '@nestjs/mongoose';
+import { User, UserSchema } from './users/schema/user.schema';
+import { AllExceptionsFilter } from './common/filters/http-exception.filter';
 // import { APP_FILTER } from '@nestjs/core';
 // import { AllExceptionsFilter } from './common/http-exception.filter';
 
 @Module({
-    imports: [UsersModule],
+    imports: [
+        ConfigModule.forRoot({ isGlobal: true }),
+        MongooseModule.forRoot(process.env.CONNECTION_URL),
+        MongooseModule.forFeature([{ name: User.name, schema: UserSchema }]),
+    ],
     controllers: [AppController, UsersController],
     providers: [
         AppService,
         UsersService,
-        // {
-        //     provide: APP_FILTER,
-        //     useClass: AllExceptionsFilter,
-        // },
+        {
+            provide: APP_FILTER,
+            useClass: AllExceptionsFilter,
+        },
         {
             provide: APP_GUARD,
             useClass: RolesGuard,
-          },
+        },
     ],
 })
 export class AppModule implements NestModule {

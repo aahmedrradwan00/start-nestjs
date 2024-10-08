@@ -18,4 +18,7 @@ export class CreateUserDto {
     @IsString()
     @IsNotEmpty({ message: 'Password must be entered' })
     password: string;
+
+    // @IsString()
+    // image?: string;
 }

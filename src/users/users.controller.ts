@@ -15,6 +15,7 @@ import {
     Post,
     Query,
     Req,
+    UploadedFile,
     UseInterceptors,
     ValidationPipe,
 } from '@nestjs/common';
@@ -26,33 +27,55 @@ import { UserEntity } from './user.entity';
 import { UsersService } from './users.service';
 import { Roles } from 'src/common/decorators/roles.decorator';
 import { LoggingInterceptor } from 'src/common/interceptor/logging.interceptor';
+import { ConfigService } from '@nestjs/config';
+import { User } from './schema/user.schema';
+import { UserInterface } from './interface/user.interface';
+import { FileInterceptor } from '@nestjs/platform-express/multer/interceptors/file.interceptor';
+import { NoFilesInterceptor } from '@nestjs/platform-express';
 
 @Controller('users')
 export class UsersController {
-    constructor(private usersService: UsersService) {}
+    constructor(
+        private usersService: UsersService,
+        private configService: ConfigService,
+    ) {}
 
     @Get()
     @UseInterceptors(new LoggingInterceptor())
-    findAllUser(@Query('name', CustomValidationPipe) name: string): UserEntity[] {
+    async findAllUser(@Query('name', CustomValidationPipe) name: string): Promise<User[]> {
+        const name2 = this.configService.get<string>('NAME');
+        console.log('Config Name:', name2);
+        console.log('Process Environment Name:', process.env.NAME);
+
+        // You might want to filter users by name if it's provided
         return this.usersService.findUsers();
     }
 
     @Get(':id')
-    findOne(@Param('id', new ParseUUIDPipe({ errorHttpStatusCode: HttpStatus.NOT_ACCEPTABLE })) id: string): UserEntity {
-        const user = this.usersService.findUserById(id);
-        if (!user) throw new NotFoundException();
-        return user;
+    async findOne(@Param('id') id: string): Promise<User> {
+        return this.usersService.findUserById(id);
     }
 
-    @Post()
-    // @Roles(['admin'])
-    @HttpCode(HttpStatus.CREATED)
-    createUser(@Body() createUserDto: CreateUserDto, @Req() req: Request) {
-        return this.usersService.createUser(createUserDto);
+    // @Post()
+    // // @Roles(['admin'])
+    // @HttpCode(HttpStatus.CREATED)
+
+    // async createUser(@Body() createUserDto: CreateUserDto, @Req() req: Request) {
+    //     console.log(createUserDto);
+    //     return await this.usersService.createUser(createUserDto);
+    // }
+
+    @UseInterceptors(FileInterceptor('file'))
+    @Post('create')
+    async createUser(@Body() createUserDto: CreateUserDto, @UploadedFile() file: Express.Multer.File, @Req() req: Request) {
+        console.log(createUserDto);
+        if (file) console.log(file.buffer.toString());
+        else console.log('No file uploaded');
+        return await this.usersService.createUser(createUserDto);
     }
 
     @Patch(':id')
-    update(@Req() req: Request, @Param('id', ParseUUIDPipe) id: string, @Body() updateUserDto: UpdateUserDto): any {
+    update(@Req() req: Request, @Param('id') id: string, @Body() updateUserDto: UpdateUserDto): any {
         console.log(id);
         return this.usersService.updateUser(id, updateUserDto);
     }
