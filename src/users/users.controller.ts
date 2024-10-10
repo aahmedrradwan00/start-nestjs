@@ -17,6 +17,7 @@ import {
     Req,
     UploadedFile,
     UseInterceptors,
+    UsePipes,
     ValidationPipe,
 } from '@nestjs/common';
 import { Request } from 'express';
@@ -32,6 +33,7 @@ import { User } from './schema/user.schema';
 import { UserInterface } from './interface/user.interface';
 import { FileInterceptor } from '@nestjs/platform-express/multer/interceptors/file.interceptor';
 import { NoFilesInterceptor } from '@nestjs/platform-express';
+import { log } from 'console';
 
 @Controller('users')
 export class UsersController {
@@ -56,21 +58,18 @@ export class UsersController {
         return this.usersService.findUserById(id);
     }
 
-    // @Post()
+    @UseInterceptors(FileInterceptor('image'))
+    @Post('')
+    @UsePipes(new ValidationPipe({ whitelist: true, forbidNonWhitelisted: true }))
     // // @Roles(['admin'])
-    // @HttpCode(HttpStatus.CREATED)
-
-    // async createUser(@Body() createUserDto: CreateUserDto, @Req() req: Request) {
-    //     console.log(createUserDto);
-    //     return await this.usersService.createUser(createUserDto);
-    // }
-
-    @UseInterceptors(FileInterceptor('file'))
-    @Post('create')
+    @HttpCode(HttpStatus.CREATED)
     async createUser(@Body() createUserDto: CreateUserDto, @UploadedFile() file: Express.Multer.File, @Req() req: Request) {
+        if (file) {
+            console.log(file);
+            createUserDto.image = file.originalname;
+        }
         console.log(createUserDto);
-        if (file) console.log(file.buffer.toString());
-        else console.log('No file uploaded');
+        
         return await this.usersService.createUser(createUserDto);
     }
 

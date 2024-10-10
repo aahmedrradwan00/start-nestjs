@@ -14,8 +14,8 @@ export class User {
     @Prop({ required: [true, 'Password is required'], minlength: [6, 'Password must be at least 6 characters long'] })
     password: string;
 
-    // @Prop()
-    // image?: string;
+    @Prop()
+    image?: string;
 }
 
 export const UserSchema = SchemaFactory.createForClass(User);

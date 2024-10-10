@@ -16,9 +16,11 @@ export class CreateUserDto {
     age?: number;
 
     @IsString()
+    @Length(3, 20)
     @IsNotEmpty({ message: 'Password must be entered' })
     password: string;
 
-    // @IsString()
-    // image?: string;
+    @IsOptional()
+    @IsString()
+    image?: string;
 }
