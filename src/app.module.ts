@@ -21,13 +21,13 @@ import { diskStorage } from 'multer';
     imports: [
         ConfigModule.forRoot({ isGlobal: true }),
         MongooseModule.forRoot(process.env.CONNECTION_URL),
-        UsersModule,
-        AuthModule,
         DatabaseModule,
+        AuthModule,
+        UsersModule,
         MulterModule.register({
             storage: diskStorage({
                 destination: './upload',
-                filename: (req, file, cb) => cb(null, `${Date.now()}-${file.originalname}`),
+                filename: (req, file, cb) => cb(null, `${Date.now()}-{file.originalname}`),
             }),
         }),
     ],

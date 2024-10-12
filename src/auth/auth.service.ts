@@ -1,7 +1,5 @@
 import { Injectable, UnauthorizedException } from '@nestjs/common';
-import { SignInDto } from './dtos/login.dto';
 import { User, UserDocument } from '../users/schema/user.schema';
-import { UsersService } from '../users/users.service';
 import { JwtService } from '@nestjs/jwt';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
@@ -10,17 +8,16 @@ import { Model } from 'mongoose';
 export class AuthService {
     constructor(
         @InjectModel(User.name) private userModel: Model<UserDocument>,
-        private usersService: UsersService,
         private jwtService: JwtService,
     ) {}
 
-    async singIn(email: string, password: string): Promise<{ token: string }> {
+    async singIn(email: string, password: string): Promise<{ user: User; token: string }> {
         const user = await this.userModel.findOne({ email });
         if (!user || user.password !== password) {
             throw new UnauthorizedException('Invalid credentials');
         }
-        const payload =  { sub: user._id, email: user.email };
+        const payload = { sub: user._id, email: user.email };
         const token = await this.jwtService.signAsync(payload);
-        return { token };
+        return { token, user };
     }
 }

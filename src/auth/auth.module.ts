@@ -2,15 +2,14 @@ import { Module } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { AuthController } from './auth.controller';
 import { UsersModule } from '../users/users.module';
-import { JwtModule } from '@nestjs/jwt';
-import * as process from 'node:process';
+import { JwtModule, JwtService } from '@nestjs/jwt';
 import { UsersService } from 'src/users/users.service';
 import { DatabaseModule } from 'src/common/database/database.module';
-import { MongooseModule } from '@nestjs/mongoose';
-import { User, UserSchema } from 'src/users/schema/user.schema';
+import { ConfigModule } from '@nestjs/config';
 
 @Module({
     imports: [
+        ConfigModule.forRoot(),
         DatabaseModule,
         UsersModule,
         JwtModule.register({
@@ -19,7 +18,7 @@ import { User, UserSchema } from 'src/users/schema/user.schema';
             signOptions: { expiresIn: '60d' },
         }),
     ],
-    providers: [AuthService, UsersService],
     controllers: [AuthController],
+    providers: [AuthService, UsersService, JwtService],
 })
 export class AuthModule {}
