@@ -13,7 +13,7 @@ async function bootstrap() {
             transform: true,
             exceptionFactory: (errors) =>
                 new BadRequestException({
-                    message: errors.map((err) => `${Object.values(err.constraints).join(', ')}`).join(', '),
+                    message: errors.map((err) => ` ${Object.values(err.constraints).join(', ')}`).join(', '), 
                 }),
         }),
     );

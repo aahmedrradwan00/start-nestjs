@@ -1,12 +1,10 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
-import { UserEntity } from './user.entity';
 import { UpdateUserDto } from './dtos/update-user.dto';
 import { CreateUserDto } from './dtos/create-user.dto';
-import { v4 as uuid } from 'uuid';
-import { InjectConnection, InjectModel } from '@nestjs/mongoose';
+// import { v4 as uuid } from 'uuid';
+import { InjectModel } from '@nestjs/mongoose';
 import { User, UserDocument } from './schema/user.schema';
-import { Connection, Model } from 'mongoose';
-import { UserInterface } from './interface/user.interface';
+import {  Model } from 'mongoose';
 
 @Injectable()
 export class UsersService {
